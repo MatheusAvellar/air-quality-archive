@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title> Análise da Qualidade do Ar Carioca </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./style.css"/>
+  <!-- Leaflet.js -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin/>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin></script>
+  <!-- ApexCharts.js -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+<body>
+  <!-- Utilities -->
+  <script src="./util.js"></script>
+  <div hidden>
+    <!-- Arrow up SVG for "back to top" links -->
+    <svg>
+      <path id="arrow-up" d="M12,7L17,12H14V16H10V12H7L12,7M12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20Z" />
+    </svg>
+  </div>
+  <header>
+    <h1> Análise da Qualidade do Ar </h1>
+    <p class="subtitle">
+      Além de características físico-químicas da atmosfera carioca
+    </p>
+  </header>
+  <main>
+    <section>
+      <p> Aqui está o mapa indicando todas as estações mapeadas: </p>
+      <figure>
+        <div id="map"></div>
+        <figcaption>
+          Mapa com a localização das estações mapeadas e zonas as quais
+          pertencem.
+        </figcaption>
+      </figure>
+      <script src="./visuals/map.js" defer></script>
+    </section>
+    <section>
+      <fieldset id="toc">
+        <legend> Sumário </legend>
+        <nav>
+          <ol>
+            <li>
+              <a href="#iqar">IQAR</a>
+              <ol>
+                <li>
+                  <a href="#tijuca-o3">
+                    IQAR para poluente O<sub>3</sub>
+                  </a>
+                </li>
+                <li>
+                  <a href="#tijuca-no2">
+                    IQAR para poluente NO<sub>2</sub>
+                  </a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="#temp">Temperaturas</a>
+            </li>
+            <li>
+              <a href="#dew">
+                Ponto de orvalho, temperatura e umidade relativa
+              </a>
+            </li>
+            <li>
+              <a href="#rain">Precipitação no Natal</a>
+            </li>
+            <li>
+              <a href="#pm">Material particulado</a>
+            </li>
+            <li>
+              Radiação solar
+              <ol>
+                <li>
+                  <a href="#irradiance">Irradiância</a>
+                </li>
+                <li>
+                  <a href="#illuminance">Iluminância</a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="#wind">Direção do vento</a>
+            </li>
+          </ol>
+        </nav>
+      </fieldset>
+    </section>
+    <section id="iqar">
+      <p>
+        IQAR é um valor numérico compreendido entre 0 e 300. Categoriza a
+        qualidade do ar nas seguintes seções:
+      </p>
+      <dl>
+        <dt>Boa</dt>
+        <dd>
+          IQAR na faixa 0–50;<br>
+          A qualidade do ar é satisfatória e apresenta pouco ou nenhum risco
+          para a saúde da população.
+        </dd>
+        <dt>Regular</dt>
+        <dd>
+          IQAR na faixa 51–100;<br>
+          Nesta faixa, a qualidade do ar é aceitável. Porém, as concentrações
+          existentes no ar podem causar uma preocupação moderada à saúde para
+          um número muito pequeno de indivíduos. Pessoas com extrema
+          sensibilidade ao ozônio e ao material particulado podem experimentar
+          problemas respiratórios.
+        </dd>
+        <dt>Inadequada</dt>
+        <dd>
+          IQAR na faixa 101–199;<br>
+          Os membros de grupos sensíveis podem ter efeitos na saúde, mas a
+          população em geral não é afetada. Pessoas com doença pulmonar,
+          doenças cardíacas, crianças e idosos são considerados como grupos
+          mais sensíveis e, portanto, de maior risco.
+        </dd>
+        <dt>Má</dt>
+        <dd>
+          IQAR na faixa 200–299;<br>
+          Toda a população começa a sentir os efeitos na saúde quando os
+          valores estão compreendidos nesta faixa.
+        </dd>
+        <dt>Péssima</dt>
+        <dd>
+          IQAR igual ou maior a 300;<br>
+          Quando estes valores são atingidos, deve ser dado um alerta à
+          população, pois todos podem experimentar efeitos na saúde.
+        </dd>
+      </dl>
+    </section>
+    <section id="tijuca-o3">
+      <p>
+        O gráfico a seguir mostra as 50 medições mais recentes do IQAR para
+        O<sub>3</sub>, medido na estação da Tijuca.
+      </p>
+      <h2> IQAR para poluente O<sub>3</sub> </h2>
+      <figure>
+        <div id="chart-ozone"></div>
+        <figcaption>
+          Índice de Qualidade do Ar para o poluente O<sub>3</sub> (ozônio), como
+          medido na estação da Tijuca.
+        </figcaption>
+      </figure>
+      <p>
+        Percebe-se picos, porém nenhuma medição fica acima do nível "Regular". A
+        qualidade do ar é aceitável.
+      </p>
+      <script src="./visuals/o3.js" defer></script>
+    </section>
+    <section id="tijuca-no2">
+      <p>
+        Este gráfico, por sua vez, mostra a variação das últimas 50 medições de
+        IQAR para o poluente NO<sub>2</sub>, como medido na estação da Tijuca.
+      </p>
+      <h2> IQAR para poluente NO<sub>2</sub> </h2>
+      <figure>
+        <div id="chart-nitrogen"></div>
+        <figcaption>
+          Índice de Qualidade do Ar para o poluente NO<sub>2</sub> (dióxido de
+          nitrogênio), como medido na estação da Tijuca.
+        </figcaption>
+      </figure>
+      <p>
+        Para NO<sub>2</sub>, o maior índice alcançado ocorre no dia
+        <time id="max-no2-date"></time>, quando atinge um nível de
+        <data id="max-no2-val"></data>. Contudo, esse nível continua sob a faixa
+        "Regular", e é portanto aceitável.
+      </p>
+      <script src="./visuals/no2.js" defer></script>
+      <p class="back-to-top">
+        <a href="#toc" title="Voltar ao topo"><svg viewBox="0 0 24 24"><use href="#arrow-up"/></svg></a>
+      </p>
+    </section>
+    <section><hr></section>
+    <section id="temp">
+      <p>
+        A seguir, analisamos dados sobre as temperaturas registradas:
+      </p>
+      <h2> Temperaturas </h2>
+      <article class="side-by-side">
+        <dl>
+          <dt> Maior temperatura </dt>
+          <dd>
+            A maior temperatura detectada foi de <data id="max-temp-val"></data>&nbsp;°C,
+            no dia <time id="max-temp-date"></time> às <time id="max-temp-time"></time>,
+            pela estação <cite id="max-temp-station"></cite>.
+          </dd>
+          <dt> Menor temperatura </dt>
+          <dd>
+            A menor temperatura detectada foi de <data id="min-temp-val"></data>&nbsp;°C,
+            no dia <time id="min-temp-date"></time> às <time id="min-temp-time"></time>,
+            pela estação <cite id="min-temp-station"></cite>.
+          </dd>
+          <dt> Temperatura média </dt>
+          <dd>
+            A temperatura média de todas as análises, indicada ao lado em preto,
+            é de (a&shy;pro&shy;xi&shy;ma&shy;da&shy;men&shy;te)
+            <data id="avg-temp-val"></data>&nbsp;°C.<br>
+            A título de curiosidade, a temperatura foi registrada sendo igual à
+            média <data id="avg-temp-count"></data> vezes.
+          </dd>
+        </dl>
+        <figure>
+          <div id="chart-temperature"></div>
+          <figcaption>
+            Gráfico das temperaturas. A média é representada pela linha em preto.
+          </figcaption>
+        </figure>
+      </article>
+      <script src="./visuals/temperature.js" defer></script>
+      <p class="back-to-top">
+        <a href="#toc" title="Voltar ao topo"><svg viewBox="0 0 24 24"><use href="#arrow-up"/></svg></a>
+      </p>
+    </section>
+    <section><hr></section>
+    <section id="dew">
+      <p>
+        Nesta seção, veremos informações sobre o chamado "ponto de orvalho".
+      </p>
+      <blockquote cite="https://pt.wikipedia.org/wiki/Ponto_de_orvalho">
+        <p>
+          Ponto de orvalho designa a temperatura na qual o vapor de água
+          presente no ar ambiente passa ao estado líquido na forma de pequenas
+          gotas por via da condensação, o chamado <em>orvalho</em>.
+        </p>
+      </blockquote>
+      <p>
+        Para calcular o ponto de orvalho com alta precisão, utiliza-se a equação
+        de Arden Buck, que relaciona temperatura, pressão e umidade relativa.
+        Porém, a fórmula é muito complexa, então usaremos a seguinte aproximação,
+        com <q cite="https://pt.wikipedia.org/wiki/Ponto_de_orvalho">precisão de
+        ±1&nbsp;°C enquanto a umidade está acima de 50%</q>:
+      </p>
+      <figure class="center">
+        <!-- Tpo ~ T - (100 - UR)/5 -->
+        <img style="height:3em" src="./img/dewpoint.png">
+        <figcaption>
+          Aproximação da equação de Arden Buck.
+        </figcaption>
+      </figure>
+      <p>
+        Onde:
+        <ul>
+          <li><var>T<sub>po</sub></var> é o ponto de orvalho (o que queremos);</li>
+          <li><var>T</var> é a temperatura do ar;</li>
+          <li><var>UR</var> é a Umidade Relativa do ar.</li>
+        </ul>
+        Possuímos, pelas análises, tanto a temperatura do ar, quanto a umidade
+        relativa. Portanto, podemos calcular o ponto de orvalho para um dado
+        instante de tempo. Aqui, temos as informações geradas a partir dos dados
+        da estação de Copacabana:
+      </p>
+      <h2> Ponto de orvalho, temperatura, pressão e umidade relativa </h2>
+      <figure>
+        <div id="chart-dewpoint"></div>
+        <div id="chart-relhum"></div>
+        <figcaption>
+          Acima, comparação do ponto de orvalho com a temperatura (ambos medidos
+          em °C); abaixo, umidade relativa do ar (em %) e pressão (em mbar).
+          Dados fornecidos pela estação de Copacabana.
+        </figcaption>
+      </figure>
+      <p>
+        Pelos gráficos, pode-se perceber como pressão e umidade relativa
+        influenciam no ponto de orvalho.
+      </p>
+      <script src="./visuals/dewpoint.js" defer></script>
+      <p class="back-to-top">
+        <a href="#toc" title="Voltar ao topo">
+          <svg viewBox="0 0 24 24"><use href="#arrow-up"/></svg>
+        </a>
+      </p>
+    </section>
+    <section><hr></section>
+    <section id="rain">
+      <p>
+        A seguir, analisaremos locais em que houve chuva no dia de Natal (25 de
+        dezembro) de 2018.
+      </p>
+      <h2> Precipitação no Natal </h2>
+      <figure>
+        <div id="chart-rain"></div>
+        <figcaption>
+          Gráfico precipitação (em mm) por tempo, adquirido de análises
+          realizadas no dia 25 de dezembro de 2018.
+        </figcaption>
+      </figure>
+      <script src="./visuals/rain.js" defer></script>
+      <p class="back-to-top">
+        <a href="#toc" title="Voltar ao topo"><svg viewBox="0 0 24 24"><use href="#arrow-up"/></svg></a>
+      </p>
+    </section>
+    <section><hr></section>
+    <section id="pm">
+      <p>
+        Material particulado (em inglês, <i lang="en">Particulate Matter</i> ou
+        PM) é o nome dado à matéria microscópica, seja ela sólida ou líquida,
+        suspensa no ar.
+      </p>
+      <blockquote cite="https://en.wikipedia.org/wiki/Particulates">
+        <p>
+          A Agência Internacional de Pesquisa em Câncer (AIPC) e a Organização
+          Mundial da Saúde (OMS) consideram material particulado como
+          cancerígenos de Grupo 1 – há evidência suficiente para concluir que
+          pode causar câncer em humanos. O material particulado é considerado a
+          pior forma de poluição do ar, por sua habilidade de penetrar
+          profundamente nos pulmões e corrente sanguínea não filtrado, causando
+          paradas cardíacas, doenças respiratórias e morte prematura.
+        </p>
+      </blockquote>
+      <p>
+        Partículas com diâmetro de 10 μm (1 μm = 0.001 mm) ou menos são chamadas
+        de PM<sub>10</sub>, enquanto que aquelas com diâmetro de 2.5 mícrons ou
+        menos são PM<sub>2.5</sub>. Para efeito de comparação, um fio de cabelo
+        humano tem por volta de 75 mícrons de diâmetro – aproximadamente o mesmo
+        tamanho de 30 PM<sub>2.5</sub>.
+      </p>
+      <p>
+        Um estudo realizado em 2013 envolvendo 312.944 pessoas em nove países
+        europeus revelou que, para cada aumento de 10 μg/m<sup>3</sup> em
+        PM<sub>10</sub>, a taxa de câncer de pulmão aumentou em 22%.
+        PM<sub>2.5</sub> foram particularmente fatais, com aumento de 36% em
+        câncer de pulmão por 10 μg/m<sup>3</sup>.
+      </p>
+      <p>
+        Para finalizar, apesar de nenhum nível ser considerado "seguro", a OMS
+        recomenda que a média diária de PM<sub>10</sub> seja mantida abaixo de
+        50 μg/m<sup>3</sup>, enquanto que a média dária de PM<sub>2.5</sub> seja
+        mantida abaixo de 25 μg/m<sup>3</sup>.<sup><cite>[<a
+href="https://www.who.int/news-room/fact-sheets/detail/ambient-(outdoor)-air-quality-and-health"
+rel="noreferrer" target="_blank">WHO</a>]</cite></sup>
+      </p>
+      <h2> Material particulado ao fim de 2013, comparado ao fim de 2018 </h2>
+      <figure>
+        <div id="chart-2013-pm"></div>
+        <figcaption>
+          Gráfico das medições, em μg/m<sup>3</sup>, de PM<sub>10</sub> e
+          PM<sub>2.5</sub> na estação de Irajá, do início do dia 26/12/2013 ao
+          final do dia 31/12/2012.
+        </figcaption>
+      </figure>
+      <figure>
+        <div id="chart-2018-pm"></div>
+        <figcaption>
+          Gráfico das medições, em μg/m<sup>3</sup>, de PM<sub>10</sub> e
+          PM<sub>2.5</sub> na estação de Irajá, do início do dia 26/12/2018 ao
+          final do dia 31/12/2018.
+        </figcaption>
+      </figure>
+      <article class="side-by-side-big">
+        <div>
+          <p>
+            Para o intervalo de 5 dias, a média diária, no ano de 2013, foi de:
+          </p>
+          <ul>
+            <li>
+              Para PM<sub>10</sub>: <data id="avg-pm10-2013-val"></data> (de 50)
+              μg/m<sup>3</sup>
+            </li>
+            <li>
+              Para PM<sub>2.5</sub>: <data id="avg-pm2_5-2013-val"></data> (de 25)
+              μg/m<sup>3</sup>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <p>
+            No ano de 2018, a média diária pelo mesmo intervalo foi de:
+          </p>
+          <ul>
+            <li>
+              Para PM<sub>10</sub>: <data id="avg-pm10-2018-val"></data> (de 50)
+              μg/m<sup>3</sup>
+            </li>
+            <li>
+              Para PM<sub>2.5</sub>: <data id="avg-pm2_5-2018-val"></data> (de 25)
+              μg/m<sup>3</sup>
+            </li>
+          </ul>
+        </div>
+      </article>
+      <p>
+        Percebe-se uma melhora significativa na qualidade do ar no ano de 2018
+        quando comparado ao ano de 2013.
+      </p>
+      <script src="./visuals/pm.js" defer></script>
+      <p class="back-to-top">
+        <a href="#toc" title="Voltar ao topo"><svg viewBox="0 0 24 24"><use href="#arrow-up"/></svg></a>
+      </p>
+    </section>
+    <section><hr></section>
+    <section id="irradiance">
+      <p>
+        <dfn>Irradiância</dfn> é a medição de potência por unidade de área. Não
+        se deve confundí-la com <dfn>irradiação</dfn>, que é obtida integrando a
+        irradiância por um período de tempo.
+      </p>
+      <p>
+        A irradiância solar é comumente medida em W/m<sup>2</sup>. Abaixo,
+        analisamos a variação da irradiância solar em um período de três dias,
+        entre 20 e 23 de março de 2012, como detectado pela estação de Campo
+        Grande.
+      </p>
+      <p>
+        O pico de <data>1864.67</data> W/m<sup>2</sup> é, na realidade, a maior
+        medição de irradiância solar presente nos dados analisados.
+      </p>
+      <h2>Irradiância solar</h2>
+      <figure>
+        <div id="chart-solar"></div>
+        <figcaption>
+          Gráfico da irradiação solar por tempo, medida do início do dia
+          20/03/2012 ao final do dia 22/03/2012 na estação de Campo Grande. Por
+          motivos óbvios, os picos estão na parte do dia, enquanto que, à noite,
+          não há irradiância.
+        </figcaption>
+      </figure>
+    </section>
+    <section id="illuminance">
+      <p>
+        A unidade de iluminância, <dfn>lux</dfn> (lx), é a medida de fluxo
+        luminoso por unidade de área, definido em termos de lumen por metro
+        quadrado (lm/m<sup>2</sup>). Para obtermos um resultado em lux,
+        podemos multiplicar a <dfn>eficácia luminosa</dfn> (lm/W) pela
+        irradiância (W/m<sup>2</sup>).
+      </p>
+      <figure class="center">
+        <img style="height:3em" src="./img/lux.png">
+        <figcaption>
+          Definição da unidade lux como resultado de irradiância &times;
+          eficácia luminosa.
+        </figcaption>
+      </figure>
+      <p>
+        Sabemos que o Sol possui uma eficácia luminosa de 93 lm/W. Portanto,
+        é trivial construir o gráfico de iluminância solar de um dado intervalo
+        de tempo.
+      </p>
+      <h2>Iluminância solar</h2>
+      <figure>
+        <div id="chart-lux"></div>
+        <figcaption>
+          Gráfico da iluminância solar por tempo, calculada a partir dos dados
+          medidos do início do dia 20/03/2012 ao final do dia 22/03/2012, na
+          estação de Campo Grande. Devido à maneira como iluminância é calculada,
+          o gráfico resultante é virtualmente idêntico ao gráfico de irradiância.
+        </figcaption>
+      </figure>
+      <script src="./visuals/solar.js" defer></script>
+      <p class="back-to-top">
+        <a href="#toc" title="Voltar ao topo"><svg viewBox="0 0 24 24"><use href="#arrow-up"/></svg></a>
+      </p>
+    </section>
+    <section><hr></section>
+    <section id="wind">
+      <p>
+        Podemos analisar a tendência da direção do vento somando as velocidades
+        detectadas para as respectivas direções, e colocando em um gráfico
+        radial. Aqui, vemos dados registrados pela estação de Pedra de Guaratiba.
+      </p>
+      <h2>Direção do vento, julho de 2017 e 2018</h2>
+      <article class="side-by-side-big">
+        <figure>
+          <div id="chart-wind-2017"></div>
+          <figcaption>
+            Gráfico representando as direções das velocidades acumuladas do
+            vento, as quais foram registradas em julho de 2017 pela estação de
+            Pedra de Guaratiba.
+          </figcaption>
+        </figure>
+        <figure>
+          <div id="chart-wind-2018"></div>
+          <figcaption>
+            Gráfico representando as direções das velocidades acumuladas do
+            vento, as quais foram registradas em julho de 2018 pela estação de
+            Pedra de Guaratiba.
+          </figcaption>
+        </figure>
+      </article>
+      <p>
+        Ambos os gráficos acima representam medições realizadas na primeira
+        semana de julho, de 2017 e 2018 respectivamente.
+      </p>
+      <p>
+        Percebe-se que o vento tende a ir na direção leste-oeste neste período
+        do ano, mas não tanto na direção norte-sul.
+      </p>
+      <script src="./visuals/wind.js" defer></script>
+      <p class="back-to-top">
+        <a href="#toc" title="Voltar ao topo"><svg viewBox="0 0 24 24"><use href="#arrow-up"/></svg></a>
+      </p>
+    </section>
+  </main>
+  <footer>
+    <p>
+      Feito com carinho por alunos da turma de 2019.2 da disciplina de Banco de
+      Dados I da UFRJ!<br>O código-fonte deste projeto está
+      <a href="https://github.com/leo-ventura/air-quality">disponível no GitHub</a>.
+    </p>
+  </footer>
+</body>
+</html>
